@@ -6,7 +6,7 @@ import random
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s', )
-item = Queue(10)
+item = Queue(100)
 
 
 class Producer(Thread):
@@ -21,8 +21,8 @@ class Producer(Thread):
     def produce_item(self, i):
         if not item.full():
             # number = random.randint(1, 10)
-            item.put(i)
-            logging.debug('Putting ' + str(i))
+            item.put(self.name +' message :' + str(i))
+            logging.debug('Putting')
             self.wait()
 
     def run(self):
@@ -57,13 +57,17 @@ class Consumer(Thread):
 
 
 if __name__ == '__main__':
-    threadProd = Producer(name='producer')
-    threadCons = Consumer(name='consumer')
+    for i in range(3):
+        threadProd = Producer(name='producer'+str(i))
+        threadProd.start()
+        # time.sleep(2)
 
-    threadProd.start()
-    time.sleep(2)
-    threadCons.start()
-    time.sleep(2)
+    for i in range(3):
+        threadCons = Consumer(name='consumer'+str(i))
+        threadCons.start()
+        # time.sleep(2)
+
+    # time.sleep(2)
     # pour test
     # threadCons.start()
     # time.sleep(2)
